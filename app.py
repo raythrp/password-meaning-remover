@@ -72,10 +72,10 @@ def zigzag_decrypt(text, key):
     return result
 
 # Streamlit
-st.title("Password Meaning Remover")
-st.sidebar.title("Menu")
+st.title("Password meaning destroyer")
+st.sidebar.title("Options")
 
-mode = st.sidebar.radio("Modes", ["Remove Meaning", "Restore Meaning"])
+mode = st.sidebar.radio("Mode", ["Remove Meaning", "Restore Meaning"])
 
 text = st.text_area("Enter your text")
 if st.button("Process"):
@@ -83,19 +83,19 @@ if st.button("Process"):
         st.error("Please enter the text.")
     elif len(text) < 2:
         st.error("Text must have at least two characters.")
-    elif len(text) > 15 and mode == "Encrypt (Autokey + Zigzag)":
+    elif len(text) > 15 and mode == "Remove Meaning":
         st.error("Text must have at most fifteen characters.")
-    elif len(text) > 16 and mode == "Decrypt (Zigzag + Autokey)":
+    elif len(text) > 16 and mode == "Restore Meaning":
         st.error("Text must have at most sixteen characters.")
     else:
-        key_char = text[-1]  # Karakter terakhir sebagai key
-        key_value = ord(key_char.lower()) - ord('a') + 1 
+        key_char = text[-1]  # Use the last character of the input as the key
+        key_value = ord(key_char.lower()) - ord('a') + 1  # Convert key to Zigzag rows (a=1, b=2, ..., z=26)
         
-        if mode == "Encrypt (Autokey + Zigzag)":
+        if mode == "Remove Meaning":
             autokey_result = autokey_encrypt(text)
             zigzag_result = zigzag_encrypt(autokey_result, key_value)
             st.success(f"Encrypted Text: {zigzag_result}{key_char}")
-        elif mode == "Decrypt (Zigzag + Autokey)":
+        elif mode == "Restore Meaning":
             zigzag_result = zigzag_decrypt(text, key_value)
             autokey_result = autokey_decrypt(zigzag_result)
             st.success(f"Decrypted Text: {autokey_result[:-1]}")
